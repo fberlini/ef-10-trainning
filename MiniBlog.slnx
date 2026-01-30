@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="MiniBlog.Api.Data/MiniBlog.Api.Data.csproj" />
   <Project Path="MiniBlog.Api/MiniBlog.Api.csproj" />
 </Solution>
