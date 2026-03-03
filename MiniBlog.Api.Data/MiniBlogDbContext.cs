@@ -1,15 +1,17 @@
 using Microsoft.EntityFrameworkCore;
+using MiniBlog.Api.Data.EntityConfiguration;
 using MiniBlog.Api.Data.Entities;
 
 namespace MiniBlog.Api.Data;
 
-public class MiniBlogDbContext : DbContext
+public class MiniBlogDbContext(DbContextOptions<MiniBlogDbContext> options) : DbContext(options)
 {
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<PostEntity> Posts { get; set; }
+    public DbSet<TagEntity> Tags { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=localhost;Initial catalog=MiniBlogDB;User ID=sa;Password=SuperSecret123;Encrypt=False;TrustServerCertificate=True;Connection Timeout=3;");
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(MiniBlogDbContext).Assembly);
     }
-    
 }
