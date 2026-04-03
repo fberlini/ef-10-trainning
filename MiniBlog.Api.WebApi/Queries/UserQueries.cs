@@ -7,11 +7,6 @@ namespace MiniBlog.Api.WebApi.Queries;
 
 public interface IUserQueries
 {
-    // Write
-    Task AddUserAsync(UserEntity user);
-    Task UpdateUserAsync(UserEntity user);
-
-    // Read
     Task<UserEntity?> GetUserByIdAsync(Guid id);
     Task<IReadOnlyList<UserEntity>> GetAllUsersTrackingAsync();
     Task<IReadOnlyList<UserEntity>> GetAllUsersAsNoTrackingAsync();
@@ -24,22 +19,9 @@ public class UserQueries(MiniBlogDbContext dbContext) : IUserQueries
 {
     private readonly MiniBlogDbContext _dbContext = dbContext;
 
-    public async Task AddUserAsync(UserEntity user)
-    {
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task UpdateUserAsync(UserEntity user)
-    {
-        _dbContext.Users.Update(user);
-        await _dbContext.SaveChangesAsync();
-    }
-
     public async Task<UserEntity?> GetUserByIdAsync(Guid id)
     {
-        var user = await _dbContext.Users.FindAsync(id);
-        return user;
+        return await _dbContext.Users.FindAsync(id);
     }
 
     // AsNoTracking() is used to improve performance when you don't need to track changes to the entities.
@@ -62,7 +44,6 @@ public class UserQueries(MiniBlogDbContext dbContext) : IUserQueries
             .Where(u => !lastUserId.HasValue || u.UserId > lastUserId.Value)
             .Take(10)
             .Include(u => u.Posts)
-            .AsNoTracking()
             .Select(u => new GetUsersWithPostsResponse
             {
                 UserId = u.UserId,
@@ -75,6 +56,7 @@ public class UserQueries(MiniBlogDbContext dbContext) : IUserQueries
                     CreatedAt = p.CreatedAt
                 }).ToList()
             })
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -95,8 +77,6 @@ public class UserQueries(MiniBlogDbContext dbContext) : IUserQueries
             .ThenBy(u => u.UserId)
             .Where(u => !lastUserId.HasValue || u.UserId > lastUserId.Value)
             .Take(10)
-            .Include(u => u.Posts)
-            .ThenInclude(p => p.Tags)
             .AsNoTracking()
             .Select(u => new GetUsersWithTagsAggregationResponse
             {

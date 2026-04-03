@@ -17,7 +17,7 @@ GET {{endpoint}}/users/posts?lastUserId=0062b2e9-1a35-4199-0ed4-08de8c0c7f12
 Accept: application/json
 
 ### Gets a user profile page by their unique identifier.
-GET {{endpoint}}/users/0062b2e9-1a35-4199-0ed4-08de8c0c7f12/profile
+GET {{endpoint}}/users/fe93ffba-29ac-4d2e-0a0f-08de8c0c7f12/profile
 Accept: application/json
 
 ### Gets a list of users with their most used tags
